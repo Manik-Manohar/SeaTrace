@@ -1,5 +1,5 @@
-# SeaTrace
-
+# SeaTrace 
+[Investigation Dashboard Link]([url](https://seatrace.onrender.com/))
 ### Maritime Oil-Spill Intelligence
 
 **Detect. Trace. Attribute.**
@@ -175,16 +175,32 @@ SeaTrace considers multiple signals rather than vessel proximity alone:
 ```
 
 This produces a ranked list of potential vessels for further investigation.
+
+## Live Demo
+
+**[Open SeaTrace Live Demo](https://seatrace.onrender.com)**
+
+The deployed prototype provides an interactive investigation dashboard for:
+- Sentinel-1 SAR oil-spill detection
+- Slick analysis
+- Ocean-drift backtracking
+- AIS-based vessel correlation
+- Vessel attribution and evidence visualization
+
 ## Investigation Dashboard
 The prototype provides a visual investigation interface combining satellite, environmental, and vessel information.
 
-Dashboard Overview
+### Dashboard Overview
+![Dashboard Overview](docs/screenshots/dashboard-overview.png)
 
-SAR and Drift View
+### SAR and Drift View
+![SAR and Drift View](docs/screenshots/dashboard-zoomed.png)
 
-Candidate Investigation
+### Candidate Investigation
+![Candidate Investigation](docs/screenshots/candidate-3-investigation.png)
 
-Additional Candidate Analysis
+### Additional Candidate Analysis
+![Additional Candidate Analysis](docs/screenshots/candidate-8-investigation.png)
 
 ## Prototype Output
 The current prototype processes four AI-verified spill candidates through the downstream investigation workflow.
