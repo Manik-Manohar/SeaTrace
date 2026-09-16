@@ -1,52 +1,111 @@
 from pathlib import Path
 
 from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import FileResponse
 
 
-app = FastAPI(
-    title="Maritime Oil Spill Intelligence",
-    description="AI-powered oil spill detection and vessel attribution platform",
-    version="0.1.0",
-)
+# ---------------------------------------------------------
+# Project paths
+# ---------------------------------------------------------
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# Folder where uploaded SAR images will be stored
-UPLOAD_DIR = Path("data/uploads")
+DASHBOARD_FILE = PROJECT_ROOT / "deploy" / "dashboard" / "index.html"
+UPLOAD_DIR = PROJECT_ROOT / "data" / "uploads"
+
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
-@app.get("/")
-def root():
-    return {
-        "message": "Maritime Oil Spill Intelligence API is running!",
-        "status": "online",
-    }
+# ---------------------------------------------------------
+# FastAPI application
+# ---------------------------------------------------------
 
+app = FastAPI(
+    title="SeaTrace",
+    description="Maritime oil-spill detection, drift analysis and vessel attribution platform",
+    version="1.0.0",
+)
+
+
+# ---------------------------------------------------------
+# Dashboard
+# ---------------------------------------------------------
+
+@app.get("/", include_in_schema=False)
+def dashboard():
+    """
+    Serve the SeaTrace investigation dashboard.
+    """
+    if not DASHBOARD_FILE.exists():
+        return {
+            "success": False,
+            "message": "SeaTrace dashboard file not found.",
+        }
+
+    return FileResponse(
+        path=DASHBOARD_FILE,
+        media_type="text/html",
+    )
+
+
+@app.get("/dashboard", include_in_schema=False)
+def dashboard_alias():
+    """
+    Alternate route for the SeaTrace investigation dashboard.
+    """
+    return dashboard()
+
+
+# ---------------------------------------------------------
+# Health check
+# ---------------------------------------------------------
 
 @app.get("/health")
 def health():
     return {
         "status": "healthy",
+        "service": "SeaTrace",
     }
 
 
+# ---------------------------------------------------------
+# SAR image upload
+# ---------------------------------------------------------
+
 @app.post("/api/sar/upload")
 async def upload_sar_image(file: UploadFile = File(...)):
-    # Basic file validation
-    allowed_extensions = {".png", ".jpg", ".jpeg", ".tif", ".tiff"}
+    """
+    Upload a SAR image for processing.
+    """
+
+    allowed_extensions = {
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".tif",
+        ".tiff",
+    }
+
+    if not file.filename:
+        return {
+            "success": False,
+            "message": "No filename was provided.",
+        }
 
     file_extension = Path(file.filename).suffix.lower()
 
     if file_extension not in allowed_extensions:
         return {
             "success": False,
-            "message": "Unsupported file type. Please upload PNG, JPG, JPEG, TIF, or TIFF.",
+            "message": (
+                "Unsupported file type. "
+                "Please upload PNG, JPG, JPEG, TIF, or TIFF."
+            ),
         }
 
-    # Create a safe filename
+    # Prevent directory traversal by keeping only the filename
     safe_filename = Path(file.filename).name
 
-    # Save the uploaded file
     destination = UPLOAD_DIR / safe_filename
 
     contents = await file.read()
