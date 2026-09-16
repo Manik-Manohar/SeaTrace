@@ -231,3 +231,138 @@ SeaTrace/
 ├── requirements.txt
 └── README.md 
 ```
+The repository intentionally excludes large local datasets, raw satellite scenes, trained model weights, generated data, and environment files through .gitignore.
+
+## Getting Started
+**Requirements**
+- Python 3.11+
+- Git
+**Clone**
+```
+git clone https://github.com/Manik-Manohar/SeaTrace.git
+cd SeaTrace
+```
+**Create environment**
+```
+python -m venv .venv
+```
+**Activate on Windows**
+```
+.venv\Scripts\Activate.ps1
+```
+**Install dependencies**
+```
+pip install -r requirements.txt
+```
+## Running the Pipeline
+**Prepare the dataset:**
+```
+python scripts\prepare_dataset.py
+```
+**Split the dataset:**
+```
+python scripts\split_dataset.py
+```
+**Train the classifier:**
+```
+python scripts\train_classifier.py
+```
+**Prepare spill candidates:**
+```
+python scripts\prepare_spill_candidates.py
+```
+**Run drift hindcasting:**
+```
+python scripts\oil_spill_drift_backtracking.py
+```
+**Run vessel attribution:**
+```
+python scripts\drift_aware_vessel_attribution.py
+```
+**Build final evidence:**
+```
+python scripts\build_final_attribution.py
+```
+**Generate the investigation dashboard:**
+```
+python scripts\generate_investigation_dashboard.py
+```
+**Open the dashboard:**
+```
+start data/results/maritime_investigation_dashboard.html
+```
+## Data Sources
+The project is built around the following data sources and frameworks:
+
+**Sentinel-1 / Copernicus**
+Satellite SAR imagery for maritime observation.
+
+**Zenodo**
+Oil-spill and clean-area imagery used for model development.
+
+**OpenDrift**
+Reference framework for ocean drift modelling.
+
+**Global Fishing Watch**
+AIS-derived vessel information for vessel correlation.
+
+## Limitations
+SeaTrace is currently a research and hackathon prototype.
+Several factors can affect the results:
+- Dark SAR regions can have causes other than oil.
+- Environmental data introduces uncertainty into drift reconstruction.
+- AIS observations can contain gaps or incomplete coverage.
+- AI confidence is not definitive proof of an oil spill.
+- Vessel proximity does not establish causation.
+- The current drift model is a first-order prototype.
+
+For these reasons, vessel attribution should be treated as an investigation ranking that helps prioritize further examination.
+
+## Future Work
+Planned areas for improvement include:
+- Automated Sentinel-1 scene ingestion
+- Multi-temporal SAR analysis
+- Improved oil-spill segmentation
+- Larger and more diverse training datasets
+- Adaptive drift backtracking
+- Higher-resolution oceanographic modelling
+- Higher-resolution AIS trajectories
+- Vessel behaviour and anomaly analysis
+- Probabilistic source-region estimation
+- Automated investigation reports
+- Real-time maritime monitoring
+
+## Team
+**InnovateX**
+
+## Team
+
+### InnovateX
+
+**Manik Manohar**  
+Team Lead · [LinkedIn](https://www.linkedin.com/in/manikmanohar/) · [Portfolio](https://manikmanohar.vercel.app/)  
+Hyderabad Institute of Technology and Management
+
+**Yeruva Shamsmitha**  
+Team Member · [LinkedIn](https://www.linkedin.com/in/shamsmitha/)  
+Hyderabad Institute of Technology and Management
+
+**Mohammed Amaan**  
+Team Member · [LinkedIn](https://linkedin.com/in/mohammed-amaan01?originalSubdomain=in)  
+Hyderabad Institute of Technology and Management
+
+## Hackathon
+Developed as a prototype for iQOO Hackathon 2026.
+
+**Project:**
+Leveraging Satellite Imagery to Identify Oil Spills in Sea along with AIS Data to determine Vessel responsible for it.
+
+The project explores how satellite imagery, environmental conditions, and vessel tracking data can be combined to create a traceable maritime oil-spill investigation workflow.
+
+## Disclaimer
+SeaTrace is an experimental research and hackathon prototype.
+
+Its vessel attribution output represents a ranked set of potential source vessels based on available satellite, environmental, and AIS signals.
+
+It should not be interpreted as proof of legal or causal responsibility. Confirmation would require higher-resolution data, validated oceanographic modelling, complete vessel trajectories, and independent investigation.
+
