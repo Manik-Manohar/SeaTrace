@@ -365,7 +365,7 @@ Team Member · [LinkedIn](https://linkedin.com/in/mohammed-amaan01?originalSubdo
 Hyderabad Institute of Technology and Management
 
 ## Hackathon
-Developed as a prototype for iQOO Hackathon 2026.
+Developed as a prototype for Smart India Hackathon 2026.
 
 **Project:**
 Leveraging Satellite Imagery to Identify Oil Spills in Sea along with AIS Data to determine Vessel responsible for it.
