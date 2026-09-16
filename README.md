@@ -1,46 +1,30 @@
-\# 🌊 SeaTrace
+🌊 SeaTrace
 
 
 
-\## Maritime Oil-Spill Intelligence
+ Maritime Oil-Spill Intelligence
 
 
 
-\### Detect → Trace → Attribute
-
+ Detect → Trace → Attribute
 
 
 SeaTrace is an AI-assisted maritime intelligence platform that combines \*\*Sentinel-1 SAR imagery, machine learning, environmental drift analysis, and AIS vessel data\*\* to support the investigation of potential oil-spill incidents.
 
-
-
 The system follows the complete chain:
 
-
-
-\*\*Satellite Observation → Spill Detection → Slick Analysis → Drift Hindcasting → Source Estimation → AIS Correlation → Vessel Attribution\*\*
-
-
+Satellite Observation → Spill Detection → Slick Analysis → Drift Hindcasting → Source Estimation → AIS Correlation → Vessel Attribution\*\*
 
 > \*\*SeaTrace is an investigation-support prototype. Vessel attribution results are ranked evidence signals and do not establish legal or causal responsibility.\*\*
 
 
 
-\---
 
-
-
-\## 🚀 What SeaTrace Does
-
-
+🚀 What SeaTrace Does
 
 Oil-spill investigation is not only about detecting a slick.
 
-
-
 Once a potential spill is detected, investigators also need to understand:
-
-
 
 \- Where is the slick?
 
@@ -55,87 +39,48 @@ Once a potential spill is detected, investigators also need to understand:
 \- Which vessels should be investigated first?
 
 
-
 SeaTrace connects these steps into one workflow.
-
 
 
 ```text
 
-&#x20;               SENTINEL-1 SAR
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │  Spill Detection │
-
-&#x20;            └────────┬────────┘
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │  Slick Analysis │
-
-&#x20;            └────────┬────────┘
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │ AI Verification │
-
-&#x20;            └────────┬────────┘
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │ Drift Hindcast  │
-
-&#x20;            │ Wind + Current  │
-
-&#x20;            └────────┬────────┘
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │ Source Region   │
-
-&#x20;            │ Estimation      │
-
-&#x20;            └────────┬────────┘
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │ AIS Correlation │
-
-&#x20;            └────────┬────────┘
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │ Vessel Ranking  │
-
-&#x20;            └────────┬────────┘
-
-&#x20;                     ▼
-
-&#x20;            ┌─────────────────┐
-
-&#x20;            │ Investigation   │
-
-&#x20;            │ Dashboard       │
-
-&#x20;            └─────────────────┘
-
+               SENTINEL-1 SAR
+                     │
+                     ▼
+            ┌─────────────────┐
+            │  Spill Detection │
+            └────────┬────────┘
+                     ▼
+            ┌─────────────────┐
+            │  Slick Analysis │
+            └────────┬────────┘
+                     ▼
+            ┌─────────────────┐
+            │ AI Verification │
+            └────────┬────────┘
+                     ▼
+            ┌─────────────────┐
+            │ Drift Hindcast  │
+            │ Wind + Current  │
+            └────────┬────────┘
+                     ▼
+            ┌─────────────────┐
+            │ Source Region   │
+            │ Estimation      │
+            └────────┬────────┘
+                     ▼
+            ┌─────────────────┐
+            │ AIS Correlation │
+            └────────┬────────┘
+                     ▼
+            ┌─────────────────┐
+            │ Vessel Ranking  │
+            └────────┬────────┘
+                     ▼
+            ┌─────────────────┐
+            │ Investigation   │
+            │ Dashboard       │
+            └─────────────────┘
 
 
 🛰️ Key Features
