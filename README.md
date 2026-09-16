@@ -349,9 +349,6 @@ Planned areas for improvement include:
 - Real-time maritime monitoring
 
 ## Team
-**InnovateX**
-
-## Team
 
 ### InnovateX
 
