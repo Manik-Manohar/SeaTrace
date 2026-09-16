@@ -1,6 +1,7 @@
 import os
 import json
 import math
+import csv
 import pandas as pd
 
 
@@ -16,6 +17,10 @@ WIND_FILE = (
 CURRENT_FILE = (
     "data/results/environmental/"
     "historical_ocean_currents_candidates.json"
+)
+
+CANDIDATES_FILE = (
+    "data/results/final_spill_candidates.csv"
 )
 
 OUTPUT_DIR = "data/results/environmental"
@@ -48,39 +53,112 @@ WINDAGE_FACTOR = 0.03
 
 
 # ============================================================
-# CANDIDATES
+# LOAD SPILL CANDIDATES
 # ============================================================
 
-CANDIDATES = {
+def load_candidates(path):
+    """
+    Load AI-verified spill candidates from CSV.
 
-    3: {
-        "latitude": -16.417958,
-        "longitude": 51.869334,
-        "ai_score": 98.37,
-        "sar_score": 69.7,
-    },
+    Expected columns:
 
-    5: {
-        "latitude": -15.345961,
-        "longitude": 51.524552,
-        "ai_score": 67.20,
-        "sar_score": 68.8,
-    },
+        candidate_id
+        latitude
+        longitude
+        ai_oil_score
+        sar_score
+    """
 
-    8: {
-        "latitude": -16.245959,
-        "longitude": 51.879733,
-        "ai_score": 80.82,
-        "sar_score": 68.5,
-    },
+    if not os.path.exists(path):
 
-    15: {
-        "latitude": -14.908362,
-        "longitude": 51.549351,
-        "ai_score": 85.96,
-        "sar_score": 66.3,
-    },
-}
+        print()
+        print("ERROR: Spill candidate file not found:")
+        print(path)
+        print()
+        print(
+            "Run this first:"
+        )
+        print(
+            "python scripts\\prepare_spill_candidates.py"
+        )
+
+        raise SystemExit(1)
+
+    candidates = {}
+
+    with open(
+        path,
+        "r",
+        encoding="utf-8"
+    ) as f:
+
+        reader = csv.DictReader(f)
+
+        required_columns = [
+            "candidate_id",
+            "latitude",
+            "longitude",
+            "ai_oil_score",
+            "sar_score"
+        ]
+
+        missing = [
+            column
+            for column in required_columns
+            if column not in reader.fieldnames
+        ]
+
+        if missing:
+
+            print()
+            print(
+                "ERROR: Missing columns in candidate file:"
+            )
+
+            for column in missing:
+                print(
+                    f"  - {column}"
+                )
+
+            raise SystemExit(1)
+
+        for row in reader:
+
+            try:
+
+                candidate_id = int(
+                    float(
+                        row["candidate_id"]
+                    )
+                )
+
+                candidates[candidate_id] = {
+                    "latitude": float(
+                        row["latitude"]
+                    ),
+                    "longitude": float(
+                        row["longitude"]
+                    ),
+                    "ai_score": float(
+                        row["ai_oil_score"]
+                    ),
+                    "sar_score": float(
+                        row["sar_score"]
+                    )
+                }
+
+            except (
+                ValueError,
+                TypeError
+            ):
+
+                print(
+                    "WARNING: Skipping invalid candidate:"
+                )
+
+                print(row)
+
+    return candidates
 
 
 # ============================================================
@@ -107,7 +185,8 @@ def destination_point(
 
     km_per_degree_lon = (
         111.32
-        * math.cos(
+        *
+        math.cos(
             math.radians(latitude)
         )
     )
@@ -119,8 +198,11 @@ def destination_point(
     )
 
     if abs(km_per_degree_lon) < 0.001:
+
         new_longitude = longitude
+
     else:
+
         new_longitude = (
             longitude
             +
@@ -138,14 +220,15 @@ def get_hour_record(
     hour
 ):
     """
-    Find the record closest to a requested UTC hour.
+    Find the record matching the requested UTC hour.
     """
 
     if not records:
         return None
 
     exact = [
-        r for r in records
+        r
+        for r in records
         if r.get("hour_utc") == hour
     ]
 
@@ -175,13 +258,41 @@ def load_json(path):
 
 
 # ============================================================
-# LOAD ENVIRONMENTAL DATA
+# LOAD SPILL CANDIDATES
 # ============================================================
 
 print()
 print("=" * 70)
 print("OIL-SPILL DRIFT BACKTRACKING")
 print("=" * 70)
+
+print()
+print("Loading spill candidates...")
+
+CANDIDATES = load_candidates(
+    CANDIDATES_FILE
+)
+
+print(
+    f"Spill candidates loaded: "
+    f"{len(CANDIDATES)}"
+)
+
+for candidate_id, info in CANDIDATES.items():
+
+    print(
+        f"  Candidate #{candidate_id} | "
+        f"AI oil: {info['ai_score']:.2f}% | "
+        f"SAR: {info['sar_score']:.2f} | "
+        f"Location: "
+        f"{info['latitude']:.6f}, "
+        f"{info['longitude']:.6f}"
+    )
+
+
+# ============================================================
+# LOAD ENVIRONMENTAL DATA
+# ============================================================
 
 print()
 print("Loading wind data...")
@@ -225,6 +336,11 @@ def backtrack_candidate(
         or current_candidate is None
     ):
 
+        print(
+            f"WARNING Candidate #{candidate_id}: "
+            "Environmental data not available."
+        )
+
         return None
 
 
@@ -244,8 +360,8 @@ def backtrack_candidate(
     # --------------------------------------------------------
 
     current_lat = latitude
-    current_lon = longitude
 
+    current_lon = longitude
 
     trajectory = []
 
@@ -278,11 +394,14 @@ def backtrack_candidate(
 
         target_hour = (
             ACQUISITION_HOUR
-            - step
+            -
+            step
         )
 
         # Handle midnight crossing
+
         if target_hour < 0:
+
             target_hour += 24
 
 
@@ -298,6 +417,7 @@ def backtrack_candidate(
 
 
         if wind is None:
+
             print(
                 f"WARNING Candidate #{candidate_id}: "
                 f"No wind data for hour {target_hour}"
@@ -307,6 +427,7 @@ def backtrack_candidate(
 
 
         if current is None:
+
             print(
                 f"WARNING Candidate #{candidate_id}: "
                 f"No current data for hour {target_hour}"
@@ -319,16 +440,12 @@ def backtrack_candidate(
         # WIND
         # ----------------------------------------------------
 
-        wind_east_ms = (
-            wind.get(
-                "wind_eastward_ms"
-            )
+        wind_east_ms = wind.get(
+            "wind_eastward_ms"
         )
 
-        wind_north_ms = (
-            wind.get(
-                "wind_northward_ms"
-            )
+        wind_north_ms = wind.get(
+            "wind_northward_ms"
         )
 
 
@@ -337,6 +454,12 @@ def backtrack_candidate(
             or wind_north_ms is None
         ):
 
+            print(
+                f"WARNING Candidate #{candidate_id}: "
+                f"Missing wind components for hour "
+                f"{target_hour}"
+            )
+
             continue
 
 
@@ -344,16 +467,12 @@ def backtrack_candidate(
         # CURRENT
         # ----------------------------------------------------
 
-        current_east_kmh = (
-            current.get(
-                "current_eastward_kmh"
-            )
+        current_east_kmh = current.get(
+            "current_eastward_kmh"
         )
 
-        current_north_kmh = (
-            current.get(
-                "current_northward_kmh"
-            )
+        current_north_kmh = current.get(
+            "current_northward_kmh"
         )
 
 
@@ -361,6 +480,12 @@ def backtrack_candidate(
             current_east_kmh is None
             or current_north_kmh is None
         ):
+
+            print(
+                f"WARNING Candidate #{candidate_id}: "
+                f"Missing current components for hour "
+                f"{target_hour}"
+            )
 
             continue
 
@@ -371,12 +496,14 @@ def backtrack_candidate(
 
         wind_east_kmh = (
             wind_east_ms
-            * 3.6
+            *
+            3.6
         )
 
         wind_north_kmh = (
             wind_north_ms
-            * 3.6
+            *
+            3.6
         )
 
 
@@ -393,7 +520,9 @@ def backtrack_candidate(
             +
 
             WINDAGE_FACTOR
-            * wind_east_kmh
+            *
+            wind_east_kmh
+
         )
 
 
@@ -404,7 +533,9 @@ def backtrack_candidate(
             +
 
             WINDAGE_FACTOR
-            * wind_north_kmh
+            *
+            wind_north_kmh
+
         )
 
 
@@ -422,10 +553,13 @@ def backtrack_candidate(
                 current_lon,
 
                 -drift_east_kmh
-                * STEP_HOURS,
+                *
+                STEP_HOURS,
 
                 -drift_north_kmh
-                * STEP_HOURS
+                *
+                STEP_HOURS
+
             )
         )
 
@@ -450,6 +584,7 @@ def backtrack_candidate(
                     drift_east_kmh,
 
                     drift_north_kmh
+
                 )
 
             )
@@ -501,6 +636,15 @@ def backtrack_candidate(
 
 
     # --------------------------------------------------------
+    # Safety check
+    # --------------------------------------------------------
+
+    if not trajectory:
+
+        return None
+
+
+    # --------------------------------------------------------
     # Calculate total backtracked displacement
     # --------------------------------------------------------
 
@@ -515,27 +659,40 @@ def backtrack_candidate(
         math.sqrt(
 
             (
+
                 (
                     final_lat
-                    - latitude
+                    -
+                    latitude
                 )
-                * 111.32
+
+                *
+                111.32
+
             ) ** 2
 
             +
 
             (
+
                 (
+
                     final_lon
-                    - longitude
+                    -
+                    longitude
+
                 )
-                * 111.32
+
+                *
+                111.32
+
                 *
                 math.cos(
                     math.radians(
                         latitude
                     )
                 )
+
             ) ** 2
 
         )
@@ -553,7 +710,7 @@ def backtrack_candidate(
                 latitude,
 
             "longitude":
-                longitude,
+                longitude
 
         },
 
@@ -575,7 +732,7 @@ def backtrack_candidate(
                 final_lat,
 
             "longitude":
-                final_lon,
+                final_lon
 
         },
 
@@ -583,7 +740,7 @@ def backtrack_candidate(
             displacement_km,
 
         "trajectory":
-            trajectory,
+            trajectory
 
     }
 
@@ -606,10 +763,12 @@ for candidate_id, info in CANDIDATES.items():
 
     print("-" * 70)
 
+
     result = backtrack_candidate(
         candidate_id,
         info
     )
+
 
     if result is None:
 
@@ -637,7 +796,7 @@ for candidate_id, info in CANDIDATES.items():
     )
 
     print(
-        f"  {latitude if False else info['latitude']:.6f}, "
+        f"  {info['latitude']:.6f}, "
         f"{info['longitude']:.6f}"
     )
 
