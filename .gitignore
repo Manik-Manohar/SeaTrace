@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Datasets and local data
+data/
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+
+# Generated results / outputs
+outputs/
+runs/
+
+# Trained model files
+models/*.pth
+models/*.pt
+models/*.onnx
+models/*.ckpt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
