@@ -295,16 +295,16 @@ start data/results/maritime_investigation_dashboard.html
 The project is built around the following data sources and frameworks:
 
 **Sentinel-1 / Copernicus**
-Satellite SAR imagery for maritime observation.
+- Satellite SAR imagery for maritime observation.
 
 **Zenodo**
-Oil-spill and clean-area imagery used for model development.
+- Oil-spill and clean-area imagery used for model development.
 
 **OpenDrift**
-Reference framework for ocean drift modelling.
+- Reference framework for ocean drift modelling.
 
 **Global Fishing Watch**
-AIS-derived vessel information for vessel correlation.
+- AIS-derived vessel information for vessel correlation.
 
 ## Limitations
 SeaTrace is currently a research and hackathon prototype.
