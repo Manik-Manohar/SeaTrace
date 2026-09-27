@@ -350,8 +350,6 @@ Planned areas for improvement include:
 
 ## Team
 
-### InnovateX
-
 **Manik Manohar**  
 Team Lead · [LinkedIn](https://www.linkedin.com/in/manikmanohar/) · [Portfolio](https://manikmanohar.vercel.app/)  
 Hyderabad Institute of Technology and Management
@@ -364,8 +362,6 @@ Hyderabad Institute of Technology and Management
 Team Member · [LinkedIn](https://linkedin.com/in/mohammed-amaan01?originalSubdomain=in)  
 Hyderabad Institute of Technology and Management
 
-## Hackathon
-Developed as a prototype for Smart India Hackathon 2026.
 
 **Project:**
 Leveraging Satellite Imagery to Identify Oil Spills in Sea along with AIS Data to determine Vessel responsible for it.
@@ -373,7 +369,7 @@ Leveraging Satellite Imagery to Identify Oil Spills in Sea along with AIS Data t
 The project explores how satellite imagery, environmental conditions, and vessel tracking data can be combined to create a traceable maritime oil-spill investigation workflow.
 
 ## Disclaimer
-SeaTrace is an experimental research and hackathon prototype.
+SeaTrace is an experimental research prototype.
 
 Its vessel attribution output represents a ranked set of potential source vessels based on available satellite, environmental, and AIS signals.
 
